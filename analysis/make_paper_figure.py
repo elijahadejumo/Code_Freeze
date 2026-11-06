@@ -135,9 +135,9 @@ def fig_changes():
                 ax.vlines(xs, lo, hi, color=colors, lw=0.8, zorder=2)
                 ax.scatter(xs, y, s=18, zorder=3, color=colors if fill else "white", edgecolor=colors, linewidth=1.0)
             ax.legend(handles=[Line2D([], [], color=GREY, marker="o", markerfacecolor=BLUE, markeredgecolor=BLUE, ms=4,
-                                      lw=0.9, label="all links (planned)"),
+                                      lw=0.9, label="all links"),
                                Line2D([], [], color=GREY, ls="--", marker="o", markerfacecolor="white",
-                                      markeredgecolor=BLUE, ms=4, lw=0.9, label="hand-checked")],
+                                      markeredgecolor=BLUE, ms=4, lw=0.9, label="checked links")],
                       frameon=False, fontsize=6.5, loc="upper left")
             ax.text(4.5, 2.75, "final week", ha="center", fontsize=6.5, color=MUTED)
             ax.set_ylim(0, 3.0)
@@ -168,7 +168,9 @@ def fig_soak(gradient):
         a.axvline(rel, color=color, lw=0.8, ls=":")
         a.scatter([rel], [found], s=22, color=color, edgecolor="white", linewidth=0.8, zorder=3)
         a.annotate(f"{found:.0f}%", (rel, found), textcoords="offset points", xytext=(4, -10), fontsize=7, color=INK)
-        a.text(rel + 2, 4 if grp == "late" else 20, f"{grp} code\nreleased ({rel:.0f} d)",
+        # Late label on three lines so it ends before the early release line.
+        a.text(rel + 2, 4 if grp == "late" else 20,
+               f"{grp} code\nreleased\n({rel:.0f} d)" if grp == "late" else f"{grp} code\nreleased ({rel:.0f} d)",
                fontsize=6.5, color=MUTED)
     a.set_xlim(0, 180)
     a.set_ylim(0, 102)
@@ -184,7 +186,9 @@ def fig_soak(gradient):
     b.scatter(x, 100 * g.escape_share_observed, s=26, color=[ORANGE if l else BLUE for l in late],
               edgecolor="white", linewidth=0.8, zorder=3)
     for xi, yi, lab in zip(x, 100 * g.escape_share_observed, g.bin):
-        b.annotate(lab, (xi, yi), textcoords="offset points", xytext=(5, 4), fontsize=6.5, color=MUTED)
+        # "week 2" sits just below the dashed line, so its label goes to the left of the dot.
+        off, ha = ((-5, -2), "right") if lab == "week 2" else ((5, 4), "left")
+        b.annotate(lab, (xi, yi), textcoords="offset points", xytext=off, ha=ha, fontsize=6.5, color=MUTED)
     b.legend(handles=[Line2D([], [], color=GREY, ls="--", lw=1.4, label="predicted from soak time"),
                       Line2D([], [], color="none", marker="o", markerfacecolor=ORANGE, markeredgecolor="white", ms=6,
                              label="observed, final week"),
