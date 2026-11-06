@@ -1,0 +1,3 @@
+group,problems,median_days_merge_to_release,observed_share_after_release,predicted_share_if_early_timing
+weeks 2-12,788,65.42169560185185,0.1598984771573604,0.1542232471849313
+final week,213,29.04537037037037,0.28169014084507044,0.2750589833416744

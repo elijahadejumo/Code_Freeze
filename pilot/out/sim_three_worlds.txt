@@ -1,0 +1,13 @@
+Population values (2,000 synthetic cycles; true risks):
+                                                    pressure  composition  congestion
+naive RR (final week vs weeks 2-12)                     1.60         1.61        1.56
+RR within kind (MH)                                     1.60         1.00        1.56
+RR within kind and same-day load (MH)                   1.60         1.00        1.00
+final week, same day: busy vs quiet component (MH)      1.00         1.00        1.69
+do(move final-week PR to week 7): risk ratio            0.62         1.00        0.64
+
+Kubernetes scale (27 cycles x 960 PRs, 300 replications): share of replications where the statistic exceeds 1.2
+                               pressure  composition  congestion
+naive RR > 1.2                     0.89         0.95        0.96
+RR within kind > 1.2               0.89         0.11        0.96
+busy vs quiet component > 1.2      0.33         0.29        0.86

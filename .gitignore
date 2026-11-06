@@ -1,0 +1,12 @@
+# secrets: never commit
+.env
+
+# python
+__pycache__/
+*.pyc
+
+# os
+.DS_Store
+
+# raw crawl (256 MB; rebuild with crawl/crawl_prs.py)
+data/raw/

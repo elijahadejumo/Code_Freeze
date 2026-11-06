@@ -1,0 +1,5 @@
+PRs merged on main since 1.0: 66345 (41141 via rollups)
+[1] beta cuts recovered: 65; consistent with RELEASES.md: 59 (1.13..1.99)  -> PASS (need >= 20)
+[2] revert PRs: 430; linked to a known PR: 277 (64.4%)  -> FAIL (need >= 80%)
+[3] linked reverts of PRs merged inside pre-cut windows: 194  -> PASS (need >= 100)
+inconsistent cut candidates (excluded): 6

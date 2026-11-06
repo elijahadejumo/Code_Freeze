@@ -1,0 +1,13 @@
+outcome,group,n,events,rate_pct
+Y1 revert,"v1.31, 7d before original freeze (pressure removed)",48,0,0.0
+Y1 revert,"v1.31, 7d before actual freeze",110,1,0.9090909090909091
+Y1 revert,"other cycles, final week (pressure)",3925,36,0.9171974522292993
+Y1 revert,"other cycles, weeks 2-12 (baseline)",20955,120,0.5726556907659269
+Y2 follow-up fix,"v1.31, 7d before original freeze (pressure removed)",48,1,2.083333333333333
+Y2 follow-up fix,"v1.31, 7d before actual freeze",110,1,0.9090909090909091
+Y2 follow-up fix,"other cycles, final week (pressure)",3925,119,3.0318471337579616
+Y2 follow-up fix,"other cycles, weeks 2-12 (baseline)",20955,488,2.32879980911477
+Y3 post-release problem,"v1.31, 7d before original freeze (pressure removed)",48,1,2.083333333333333
+Y3 post-release problem,"v1.31, 7d before actual freeze",110,1,0.9090909090909091
+Y3 post-release problem,"other cycles, final week (pressure)",3737,58,1.552047096601552
+Y3 post-release problem,"other cycles, weeks 2-12 (baseline)",20197,122,0.6040501064514532

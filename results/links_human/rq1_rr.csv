@@ -1,0 +1,13 @@
+outcome,comparison,rr,lo,hi,events_late,events,n
+Y1 revert,final week vs weeks 2-12,1.5885464991253142,1.094900125165005,2.3047581435822697,36,157,25579
+Y1 revert,placebo: week 7 vs other weeks 2-12,0.6430039422243009,0.30334524217439957,1.3629818841143668,7,121,21544
+Y1 revert,negative control: docs-only PRs,,,,0,1,547
+Y1 revert,"robustness: full readiness, verified timeline",1.5575996892806558,1.0685567524548896,2.270461336258897,34,154,25093
+Y2 follow-up fix,final week vs weeks 2-12,1.0283060259775503,0.5435597162457176,1.9453488760446251,26,161,25579
+Y2 follow-up fix,placebo: week 7 vs other weeks 2-12,1.021636925635277,0.5625854952838744,1.8552593633699002,12,135,21544
+Y2 follow-up fix,negative control: docs-only PRs,,,,0,1,547
+Y2 follow-up fix,"robustness: full readiness, verified timeline",0.9506800403379183,0.4825576737380452,1.8729212864772034,23,156,25093
+Y3 post-release problem,final week vs weeks 2-12,2.933150135545292,1.7372603773460917,4.952262671639478,19,54,24633
+Y3 post-release problem,placebo: week 7 vs other weeks 2-12,0.9769574175824209,0.33192172424721245,2.8755146953215083,3,35,20786
+Y3 post-release problem,negative control: docs-only PRs,,,,0,0,533
+Y3 post-release problem,"robustness: full readiness, verified timeline",3.0250174974731596,1.7866249646634225,5.121797266357273,19,54,24147

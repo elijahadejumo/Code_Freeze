@@ -1,0 +1,48 @@
+
+== discovery
+ within_days  share_found
+           7       0.5141
+          14       0.6445
+          30       0.7724
+          60       0.8772
+          90       0.9309
+         180       1.0000
+
+== gradient
+       bin    n  median_days_to_release  total_pct  escape_pct  escape_share_observed  escape_share_predicted  escape_pct_predicted
+    week 1 3847                 29.4212     2.0535      0.4679                 0.2278                  0.2349                0.4823
+    week 2 2609                 35.2628     1.1115      0.1916                 0.1724                  0.2020                0.2246
+ weeks 3-4 4409                 46.1752     1.6330      0.3175                 0.1944                  0.1567                0.2558
+ weeks 5-6 3665                 59.3871     1.6917      0.2456                 0.1452                  0.1223                0.2069
+ weeks 7-8 3776                 74.0790     1.3506      0.1589                 0.1176                  0.0881                0.1189
+weeks 9-12 6360                 95.2493     1.5409      0.0472                 0.0306                  0.0640                0.0986
+
+== rate_vs_timing
+ late_total_pct  early_total_pct_adjusted  late_escape_share  early_escape_share_adjusted  late_escape_share_predicted  escape_gap_pp  rate_part_pp  timing_part_pp  timing_part_predicted_pp  timing_share_of_gap
+         2.0535                    2.3099             0.2278                       0.0616                        0.226         0.3256       -0.0584           0.384                    0.3798               1.1794
+
+== across_cycles
+             outcome  late_effect_pp  per_extra_week_freeze_to_release_pp   lo_pp  hi_pp      p f_weeks_range
+         any problem          0.2595                               0.1242 -0.3975 0.6460 0.6407       2.3-6.7
+found before release          0.2350                               0.1953 -0.3512 0.7418 0.4836       2.3-6.7
+ found after release          0.0245                              -0.0711 -0.1907 0.0485 0.2441       2.3-6.7
+
+== author_overload
+            outcome  share_with_several  rate_one_pct  rate_several_pct  adjusted_diff_pp   lo_pp  hi_pp
+        any problem              0.6371        2.2923            1.9176           -0.2809 -1.3464 0.7845
+found after release              0.6371        0.3582            0.5304            0.2399 -0.2118 0.6916
+
+== exceptions
+               group    n  median_days_to_release  total_pct  escape_pct
+merged before freeze 3490                 30.2035     2.0630      0.4585
+ merged after freeze  357                 20.0121     1.9608      0.5602
+
+== by_feature
+        group             outcome  n_late  naive_pp   dr_pp   dr_lo  dr_hi  late_escape_share_observed  late_escape_share_predicted  early_escape_share_observed
+ kind/feature         any problem    1258    0.0564 -0.0832 -3.8878 2.0566                      0.1622                       0.2290                       0.1273
+ kind/feature found after release    1258    0.1159  0.1512 -0.2584 0.5299                      0.1622                       0.2290                       0.1273
+not a feature         any problem    2777    0.2794 -0.1699 -0.8832 0.3998                      0.2857                       0.2321                       0.0705
+not a feature found after release    2777    0.3595  0.3880  0.1609 0.6785                      0.2857                       0.2321                       0.0705
+
+freeze-to-release weeks by cycle: {'1.11': 2.9, '1.12': 3.1, '1.13': 2.3, '1.14': 2.4, '1.15': 2.4, '1.16': 2.7, '1.17': 3.4, '1.18': 2.6, '1.19': 6.7, '1.20': 3.6, '1.21': 4.1, '1.22': 3.7, '1.23': 2.9, '1.24': 4.9, '1.25': 2.9, '1.26': 4.3, '1.27': 3.9, '1.28': 3.9, '1.29': 6.0, '1.30': 6.0, '1.31': 2.9, '1.32': 4.7, '1.33': 4.7, '1.34': 4.7, '1.35': 5.7, '1.36': 4.9, '1.37': 4.9}
+evidence exit 0

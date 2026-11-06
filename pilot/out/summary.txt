@@ -1,0 +1,69 @@
+merges on master (all time): 58341; revert PRs: 732; linked revert->original pairs: 622
+releases analysed: 1.11..1.37 (27)
+non-bot, non-revert PRs in 12-week pre-freeze windows: 25880; reverted within 30d: 149
+
+pooled by week before freeze (1 = final 7 days):
+ week_before  merged  reverted  releases  merged_per_release  revert_rate_pct
+           1    3821        32        27          141.518519         0.837477
+           2    2660        12        27           98.518519         0.451128
+           3    2378        11        27           88.074074         0.462574
+           4    2192        13        27           81.185185         0.593066
+           5    1897        10        27           70.259259         0.527148
+           6    1909        12        27           70.703704         0.628601
+           7    1870         9        27           69.259259         0.481283
+           8    2122        11        27           78.592593         0.518379
+           9    1954        13        27           72.370370         0.665302
+          10    1777         8        27           65.814815         0.450197
+          11    1825        10        27           67.592593         0.547945
+          12    1475         8        26           56.730769         0.542373
+
+last 14 days, pooled:
+ day_before  merged  reverted
+          1     978        11
+          2     762         8
+          3     422         3
+          4     385         1
+          5     323         3
+          6     385         2
+          7     566         4
+          8     563         1
+          9     522         3
+         10     340         1
+         11     254         1
+         12     235         1
+         13     291         1
+         14     455         4
+
+authors merging both in final week and in weeks 5-12: 681
+  their final-week PRs: 3532, reverted 29 (0.82%)
+  their week 5-12 PRs: 11655, reverted 66 (0.57%)
+
+share of each cycle's 12-week merges landing in the final week:
+release
+1.11    0.098
+1.12    0.089
+1.13    0.122
+1.14    0.124
+1.15    0.070
+1.16    0.128
+1.17    0.160
+1.18    0.109
+1.19    0.063
+1.20    0.134
+1.21    0.237
+1.22    0.112
+1.23    0.147
+1.24    0.191
+1.25    0.188
+1.26    0.207
+1.27    0.234
+1.28    0.150
+1.29    0.179
+1.30    0.184
+1.31    0.159
+1.32    0.163
+1.33    0.205
+1.34    0.181
+1.35    0.179
+1.36    0.165
+1.37    0.195

@@ -1,0 +1,81 @@
+/opt/anaconda3/lib/python3.13/site-packages/statsmodels/regression/linear_model.py:1884: RuntimeWarning: invalid value encountered in sqrt
+  return np.sqrt(np.diag(self.cov_params()))
+units: 25579 | cycles: 27 | events: Y1 revert=163, Y2 follow-up fix=620, Y3 post-release problem=184
+
+== RQ1
+                 outcome                                    comparison    rr    lo    hi  events_late  events     n
+              Y1 revert                      final week vs weeks 2-12 1.568 1.087 2.261           37     163 25579
+              Y1 revert           placebo: week 7 vs other weeks 2-12 0.616 0.289 1.311            7     126 21544
+              Y1 revert               negative control: docs-only PRs   NaN   NaN   NaN            0       1   547
+              Y1 revert robustness: full readiness, verified timeline 1.539 1.062 2.231           35     160 25093
+       Y2 follow-up fix                      final week vs weeks 2-12 1.281 0.984 1.669          120     620 25579
+       Y2 follow-up fix           placebo: week 7 vs other weeks 2-12 0.812 0.598 1.103           36     500 21544
+       Y2 follow-up fix               negative control: docs-only PRs   NaN   NaN   NaN            0       3   547
+       Y2 follow-up fix robustness: full readiness, verified timeline 1.246 0.951 1.634          112     606 25093
+Y3 post-release problem                      final week vs weeks 2-12 2.550 1.926 3.378           59     184 24633
+Y3 post-release problem           placebo: week 7 vs other weeks 2-12 0.713 0.382 1.328            8     125 20786
+Y3 post-release problem               negative control: docs-only PRs   NaN   NaN   NaN            0       1   533
+Y3 post-release problem robustness: full readiness, verified timeline 2.541 1.911 3.378           57     182 24147
+
+== RQ2
+                 outcome  naive_gap_pp                                    naive_ci  adjusted_gap_pp                               adjusted_ci  dr_gap_pp                                     dr_ci  composition_share                                  share_ci
+              Y1 revert         0.315 (-0.004708928968485794, 0.5957880650648976)            0.128 (-0.3133810535006388, 0.4646288991479548)      0.146 (-0.3051233094206761, 0.4823677248015323)              0.593  (-0.7440162206212676, 5.890878257234944)
+       Y2 follow-up fix         0.754  (-0.01962922712531861, 1.5167362379313258)           -0.208  (-1.4403614140252012, 0.805297625199695)     -0.162 (-1.3234292668548904, 0.8851759482957651)              1.276  (-3.1669682587725956, 15.33037152531077)
+Y3 post-release problem         1.083     (0.7611111380217302, 1.399047650440417)            1.070   (0.7438943912559685, 1.398409185025193)      1.085  (0.7579247521447716, 1.4106158602132903)              0.012 (-0.06729005953734833, 0.093933362741331)
+
+== RQ3 author FE + mediation
+                 outcome  late_effect_authorFE_pp                                authorFE_ci  n_authorFE  authors  total_pp  indirect_pp                                  indirect_ci  direct_pp  share_mediated  a_m_review_threads  a_m_reviews  a_m_lgtm_removed  a_m_last_commit_to_ready
+              Y1 revert                    0.197 (-0.24467880458696065, 0.6376907010457527)       17042     1210     0.146       -0.004 (-0.031146059391671838, 0.02631262705607235)      0.151          -0.030               0.084        0.106             0.028                    -0.272
+       Y2 follow-up fix                   -0.045   (-1.146787910589404, 1.0560053216564247)       17042     1210    -0.214        0.158    (0.07577484333322132, 0.2468079033637324)     -0.371          -0.739               0.084        0.106             0.028                    -0.272
+Y3 post-release problem                    1.086   (0.6298235075106984, 1.5431491816892895)       16391     1179     1.075        0.056  (0.020755707809234858, 0.09918982724227653)      1.020           0.052               0.088        0.113             0.025                    -0.270
+
+== RQ3 v1.31
+                 outcome                                               group     n  events  rate_pct
+              Y1 revert v1.31, 7d before original freeze (pressure removed)    48       0     0.000
+              Y1 revert                      v1.31, 7d before actual freeze   110       1     0.909
+              Y1 revert                 other cycles, final week (pressure)  3925      36     0.917
+              Y1 revert                 other cycles, weeks 2-12 (baseline) 20955     120     0.573
+       Y2 follow-up fix v1.31, 7d before original freeze (pressure removed)    48       1     2.083
+       Y2 follow-up fix                      v1.31, 7d before actual freeze   110       1     0.909
+       Y2 follow-up fix                 other cycles, final week (pressure)  3925     119     3.032
+       Y2 follow-up fix                 other cycles, weeks 2-12 (baseline) 20955     488     2.329
+Y3 post-release problem v1.31, 7d before original freeze (pressure removed)    48       1     2.083
+Y3 post-release problem                      v1.31, 7d before actual freeze   110       1     0.909
+Y3 post-release problem                 other cycles, final week (pressure)  3737      58     1.552
+Y3 post-release problem                 other cycles, weeks 2-12 (baseline) 20197     122     0.604
+
+== RQ3 dose
+                  dv         term    coef      lo      hi  n_cycles
+   final_week_share  freeze_week -0.0089 -0.0157 -0.0020        25
+   final_week_share post_kep2572  0.0522  0.0245  0.0799        25
+      gap_y1_revert  freeze_week -0.0017 -0.0032 -0.0001        25
+      gap_y1_revert post_kep2572  0.0018 -0.0050  0.0087        25
+         gap_y2_fix  freeze_week  0.0019 -0.0022  0.0060        25
+         gap_y2_fix post_kep2572 -0.0134 -0.0268 -0.0000        25
+gap_y3_post_release  freeze_week  0.0002 -0.0015  0.0019        24
+gap_y3_post_release post_kep2572  0.0016 -0.0062  0.0095        24
+
+== RQ4
+                 sample                 outcome       exposure   coef  per_iqr_pp  lo_pp  hi_pp     n  events
+final week (6h-bin FE)               Y1 revert  log_conc_area  0.004       0.550 -0.007  1.108  4035      37
+final week (6h-bin FE)               Y1 revert log_conc_total -0.003      -0.233 -0.641  0.174  4035      37
+final week (6h-bin FE)               Y1 revert log_queue_wait -0.003      -0.342 -0.655 -0.030  4035      37
+final week (6h-bin FE)        Y2 follow-up fix  log_conc_area -0.002      -0.250 -1.478  0.979  4035     120
+final week (6h-bin FE)        Y2 follow-up fix log_conc_total -0.009      -0.633 -1.374  0.107  4035     120
+final week (6h-bin FE)        Y2 follow-up fix log_queue_wait -0.006      -0.599 -1.366  0.169  4035     120
+final week (6h-bin FE) Y3 post-release problem  log_conc_area  0.005       0.655  0.064  1.246  3847      59
+final week (6h-bin FE) Y3 post-release problem log_conc_total -0.001      -0.056 -0.508  0.396  3847      59
+final week (6h-bin FE) Y3 post-release problem log_queue_wait -0.003      -0.304 -0.746  0.138  3847      59
+  weeks 2-12 (week FE)               Y1 revert  log_conc_area  0.000       0.029 -0.182  0.241 21544     126
+  weeks 2-12 (week FE)               Y1 revert log_conc_total -0.001      -0.068 -0.220  0.084 21544     126
+  weeks 2-12 (week FE)               Y1 revert log_queue_wait -0.000      -0.013 -0.129  0.103 21544     126
+  weeks 2-12 (week FE)        Y2 follow-up fix  log_conc_area -0.004      -0.513 -0.988 -0.037 21544     500
+  weeks 2-12 (week FE)        Y2 follow-up fix log_conc_total -0.000      -0.030 -0.367  0.306 21544     500
+  weeks 2-12 (week FE)        Y2 follow-up fix log_queue_wait  0.000       0.007 -0.234  0.247 21544     500
+  weeks 2-12 (week FE) Y3 post-release problem  log_conc_area  0.000       0.034 -0.148  0.216 20786     125
+  weeks 2-12 (week FE) Y3 post-release problem log_conc_total -0.000      -0.038 -0.180  0.104 20786     125
+  weeks 2-12 (week FE) Y3 post-release problem log_queue_wait -0.001      -0.053 -0.193  0.087 20786     125
+
+== RQ5
+  n_problems  in_freeze_n  revert_share_in_freeze  revert_share_outside  adj_diff_pp  lo_pp  hi_pp
+        773          110                   0.227                 0.208        3.003 -6.552 12.558

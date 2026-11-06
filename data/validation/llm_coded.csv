@@ -1,0 +1,111 @@
+id,verdict,confidence,reason
+L001,y,medium,Fixes TestControllerSyncPool flake first reported on #136641; slices reusing names (index-based naming) race MutationCache; completes ineffective fix #137911.
+L004,y,medium,Kind/bug: re-adds stubs 'after #122373' because make 'explodes on darwin'; repairs non-Linux build break caused by linux build tags.
+L007,y,high,"Says it 'fixed a typo in previous refactor (#115693)' in node_shutdown_linux_test.go, alongside timeout bump for flake."
+L010,y,medium,#92784's e2e pod-delete change broke tests and was reverted; this relocates wait logic so its ephemeral tests stop failing (#93321).
+L013,n,medium,"#119709 raised fake server timeout +1ms to +10ms; flake persisted, second bumps to +30ms. Pre-existing flake, earlier fix insufficient."
+L016,y,high,"Fixes gated-pod nodeAffinity update rejected when affinity nil, a bug in mutable scheduling directives validation added by #116161 (same validation.go)."
+L019,n,high,"'Fix in #123381 was not enough'; NFS vers=4.1 issue pre-existed; first PR was an incomplete fix, not the cause."
+L022,y,medium,'Since #133940 removed [Serial]... suite runs in parallel HA jobs... failed in 10 of 15 runs'; failures caused by first PR's change.
+L025,n,medium,"'Handles a missed PVC minimum size change in #74764'; failover test failed from external GCE size change, first PR was incomplete."
+L028,y,high,'Introduced in a large-ish change to add reference counting: #80091'; refcounter errors without volumeDevices dir.
+L031,y,high,Error logging 'significantly increased since the aggregated discovery change... #113599'; release note: fixes 1.26 regression.
+L034,n,high,"Replicates Linux GCS Authorization-header change (#74142) for Windows scripts; extension, not a fix."
+L037,n,medium,"'Follow up on #104844'; forceful connection closing dates from #63492, not caused by #104844."
+L040,y,high,"Fixes data race in testShareResourceClaimSequentially in resourceclaim_test.go, the test added by #135820."
+L043,y,high,Full revert of #78463: 'flag was introduced without parsing the neg annotation'.
+L046,y,high,"Kind/regression: restores conformance image build for cross/cross-in-a-container, disabled by #99386 Makefile change."
+L049,y,high,Kind/regression: resource version tracking added 'since #125675' wrongly declares Endpoints stale; fixes endpoints_controller.go.
+L052,y,medium,Helm generator 'not read at all' before kubectl v1.21 (kustomize v4.0.5 via #98946); upgrade mitigates the security concern.
+L055,y,high,'Fix bugs in CPUManager distribute NUMA policy introduced for 1.23 in #105631'.
+L058,y,medium,"Kind/regression, 'Follow up to #93912': restores stackdriver agent support that #93912 replaced with fluentbit."
+L061,n,high,States #94115 does not reproduce the bug; the bug was first introduced by #96495.
+L064,n,high,"Re-application of reverted #133167 with an extra test fix: 'See #133167, which was reverted due to a failing test'."
+L067,y,high,Reverts #139602's resourceVersion patches; issue #140098 flake confirmed caused by #139602 ('It looks like #139602 is the cause').
+L070,y,high,"Agnhost bump in #127136 brought new iperf2 with new output fields, 'breaking the parser'; e2e failing on sig-network."
+L073,y,high,#103539 broke kubemark-500 (APF latency); wojtek-t: 'I opened #105647 to disable that logic'.
+L076,n,medium,Fixes underlying smd issue #82042 enabling revert of workaround #87196; does not fix a defect caused by #87196.
+L079,n,high,#74686 cited only as 'A similar related case' of trailing-dot validation relaxation.
+L082,y,high,'Fixes a bug introduced in #88699' with reused meta/update vars in azure_vmss.go closures.
+L085,y,high,'#84014 broke the order of node evaluation in the scheduler across scheduling cycles'.
+L088,y,medium,"Mainly follow-up of #97979, but fixes kubelet panic in validPrimaryIP parsing loop that #97979 added in kubelet_pods.go."
+L091,n,medium,#79529 'missed making the same change for detach'; short 10s detach timeout pre-existed.
+L094,y,high,'Filtered dialer introduced in 1.20 in #91785... does not correctly wire the args'; regression fix in pkg/proxy/util/utils.go.
+L097,n,high,"Addon-manager legacy base image build failure; just aligns with #127166's base image, not caused by it."
+L100,n,high,Replaces deprecated grpc.WithDialer elsewhere; #83595 only xref as similar cleanup.
+L103,n,medium,"Autoscaler lacked apps/v1 support (crashloop seen pre-merge); #80536 only referenced, no evidence the Calico upgrade caused it."
+L106,n,high,"'Apply the same style of fix as #87913 but for HTTP methods too'; extends fix, not repairing it."
+L109,n,high,Breakage introduced by #131534; #129826 mentioned only as earlier fix that got reverted by #131534.
+L002,y,medium,"Second says unit test added in #97172 decodes full swagger, ~12s under race; kind/flake speedup of that test."
+L005,y,high,"""In #108080 we missed locking the new incomingBlock in blockQueue resulting in a race""; fixes mux.go."
+L008,n,medium,First PR mentioned only as rebase dependency; issue #134100 bug not attributed to #133706.
+L011,y,high,"""This is a regression, caused by adding #132058 in 1.34""; fixes deadlock in dra_plugin_manager.go."
+L014,y,high,"""#130161 removed that flag... When passing it now, kubelet fails to come up""; fixes local-up-cluster.sh."
+L017,y,medium,"Fixes duplicate validation errors in topology validation added by #72046, per review thread on #72046; kind/bug."
+L020,y,high,"""one of my previous PR (#114373) introduced a flaky test""; fixes TestGeneratePodSandboxConfig."
+L023,n,high,Second is the planned follow-up using the new /envvar endpoint; hostname-override test problem predates first PR.
+L026,y,medium,"""once I revert #108569, the error disappears""; release note: ""Fix a 1.24 regression"" in store.go."
+L029,y,high,"""Reverts the IP allocator portions of #83422""; fixes v1.17.0 regression in service-cluster-ip-range handling."
+L032,n,medium,"Extends dangling-volume mechanism to untracked nodes; problem pre-existed, follow-up rather than defect introduced by #96224."
+L035,y,high,"""#109946 introduced Restricted policy for some of the pod tests. This broke"" Windows e2e; fixes utils.go."
+L038,y,high,"""#67768 accidentally removed population of the ClientCA"" in delegating auth; restores it."
+L041,n,high,"Companion PRs: ""Together with #64654 fixes #51457""; adds error handling in generated clients."
+L044,n,high,Second builds on first's PLEG cleanup to add on-demand per-pod relist; no defect repaired.
+L047,y,medium,"Makes new PSA check from #125271 honor emulation version; kind/bug, release-blocker, called stopgap to fix CI."
+L050,n,high,"First PR mentioned as blocker for raw block fix (""We are blocked on #74026""); unrelated defect."
+L053,y,high,Revert of #86173 to fix regression #90074 with --local/--dry-run when no kubeconfig present.
+L056,n,high,Another Windows unit-test fix (gitattributes) proposed in #110263 review; CRLF problem predates first PR.
+L059,n,medium,"First PR already reverted; second is ""a robust version of #76243"" i.e. re-application with fix."
+L062,n,high,Lowers SSA enablement; #86015 mentioned as possible flake cause already mitigated elsewhere.
+L065,y,high,"""#119537 ... has brought about a bug"" where --attach skips attachFunc init; 1.29.0 regression."
+L068,y,high,"""Changes around InPlacePodVerticalScaling feature (#128266) caused the EventHandlingPodUpdate to fail constantly""."
+L071,y,high,"""With #64976 GetGenericArchImage was used for generating the CoreDNS image path. This generated incorrect image""."
+L074,y,high,"PR page: ""issue seemed to have been introduced in #118764""; fixes memory.swap.max startup regression in 1.28."
+L077,y,high,"""Fix for bug i introduced in #130476""; wrong matcher BeEmpty replaced with BeNil."
+L080,y,high,"""Fix kube-proxy implementation of Topology Aware Hints, implemented in #99522""; regression in 1.21."
+L083,y,low,"Fixes version propagation so APILifecycle applies to CRDs; author calls it ""an oversight in the original PR"" #99840."
+L086,n,high,"Both address go1.18 verify failures; second fixes root cause, not a defect from first PR."
+L089,y,high,"""after this PR #86173 is merged, it breaks the original condition""; kubectl version without config."
+L092,y,high,"""fix #103076. A fault of mine, the configuration file content and path are not correctly distinguished""."
+L095,n,high,"Follow-up feature limiting lease objects, building on #97480 metric; no defect repaired."
+L098,n,medium,Nil-metadata check in resource allocation is pre-existing/potential issue raised in #77498 review; not a defect from it.
+L101,n,medium,Bumps e2e manifest to agnhost 2.39 to ship #110212's fix; regression came from #110174.
+L104,y,high,"""In #121538 the command for notTerminate job behavior was modified"" breaking upgrade job; kind/regression."
+L107,n,medium,"Second says availableOnNodes omission: ""#137647 didn't need it but it should have been added in #137897""."
+L110,n,medium,Completes bash 4.3 unbound-variable fix of #77910 for remaining variables; problem predates first PR.
+L003,y,high,"Device plugin e2e test 'permafailing roughly since #127506', which bundled the #120661 change; second PR fixes the failing test."
+L006,n,high,"Independent Go bump to 1.11.3 for CVE; 'in the same vein as #70665', no defect from first PR."
+L009,y,medium,'PR #77595 introduced the field CSINodeInformer... not initialized in all places'; second PR adds missing initialization.
+L012,y,high,Revert of first PR; 'Fix a 1.27 regression that custom PreEnqueue plugins aren't executed' through backoffQ.
+L015,n,high,Second PR adds e2e tests covering changes in #72687; no defect repaired.
+L018,y,high,'Fix a regression from #131801 - allocation should be skipped if admission fails'; edits allocation_manager.go.
+L021,y,high,'#134461 hardcoded the containerd/runc version for Ubuntu but it's evaluated when OS is not Ubuntu'; fixes broken GCE jobs.
+L024,n,high,Same class of logging bug in a different component (AttachedVolume); #115950 cited only as reference.
+L027,y,high,'#73409 made an erroneous fix... return was omitted'; second PR adds the missing return in config.go.
+L030,y,high,Kind/regression; ClaimTimeout became 0s after #111034 bumped Azure timeouts without defaults; follow-up sets defaults first in in_tree.go.
+L033,n,high,Follow-up promoting image tag to pick up #134164 changes; not repairing a defect from it.
+L036,y,high,"'Because I setup watch mechanism in #72045, assumed cache will be overridden'; fixes resulting flaky TestBindAPIUpdate."
+L039,y,medium,"#71192 commit raised local openapi resync to once per second, flooding logs; second PR bumps log verbosity to fix."
+L042,y,high,"'When adding the new readyz handler (#110174) we forgot to handle SIGTERM without shutdown delay', process hangs; kind/regression."
+L045,n,high,Changelog cleanup removing entry for reverted #112127; not repairing a defect introduced by its code.
+L048,n,high,Test-only PR: 'DeleteCollection was actually fixed... in #105606. Here I'm only adding test'.
+L051,y,medium,"Post-merge review of #119341 flagged raw-error behavior change and over-broad metric skipping; second PR reworks those dispatcher changes, 'Fixes #119341'."
+L054,n,medium,recordPluginMetrics was never copied in Clone before #108724; first PR only the review context for a pre-existing bug.
+L057,y,medium,"'With #130573, I'd just blanket set observedGeneration of all pod conditions... not the right thing' for resize conditions."
+L060,n,medium,"Server-side mitigation for old 0.26.0-0.26.3 clients; #116603 (client fix) is xref background, not defect source."
+L063,n,medium,Fixes pre-existing wrong comments/code on items/queue invariant (#91709); #91435 cited only for late wording discussion.
+L066,n,high,"Handles a different case (deleted UDP services), mirroring #139629's approach; no defect from first PR."
+L069,y,high,'In #123393 I made some changes... KUBE_TIMEOUT is not exported'; re-adds it explicitly in test-integration.sh.
+L072,y,high,"'#138567 modified the log line' constructing ObjectRef, causing data race; second PR fixes it in scheduling_queue.go."
+L075,y,medium,"verify-file-sizes.sh added by #121549 fails on macOS; second PR (kind/bug, Fixes #124155) fixes the script."
+L078,y,medium,"'previous attempt at fixing this fails to detect' error on older servers; kind/regression, repairs Cause check added by #92537."
+L081,n,medium,"First PR explicitly excluded CPU manager updates; second fills a feature gap in untouched cpumanager code, not citing #116429 as cause."
+L084,y,medium,"Fixes review issue in #70876's test: patch modified immutable node name, blocking #70886; edits idempotency_test.go."
+L087,n,medium,"Follow-up cleanup making FakeRuntime asserts fail tests; fixes pre-existing issue #98937, not a defect from #98956."
+L090,n,high,"Rejects overflow/negative bounds that predate #139698; first PR's step guard cited as context, not defect source."
+L093,n,high,"Removes flaky tag, citing #113562 as the fix; no defect repaired."
+L096,y,medium,"'API removed in ... #88568', 'API moved without updating test'; second PR fixes failing ResourceMetricsAPI e2e test."
+L099,y,medium,'In #101207 we updated permissions... but did not account for cluster upgrades'; changes chown to chown -R in same lines.
+L102,y,high,'#78245... changed pre-existing test to use a loop. This caused the flake from #86179'; splits tests.
+L105,n,low,"Follow-up from #97877 review discussion adding podNamespace for inline volumes; inline namespace translation unresolved before, not clearly introduced."
+L108,y,medium,"After #87012 passed KUBE_BUILD_PLATFORMS, make release failed at tarball step (comment on #87012); second PR fixes release.sh."
