@@ -1,115 +1,123 @@
-# Pressure, Composition, or Congestion? Causal effects of release deadlines (CauSE 2027)
+# The Code-Freeze Rush in Kubernetes
 
-**Venue:** CauSE 2027 (Causal Methods in Software Engineering), co-located with ICSE 2027, Dublin.
-Site: https://causality-software-engineering.github.io/cause-workshop-2027/
+Replication package for *The Code-Freeze Rush in Kubernetes*, a full paper submitted to CauSE 2027 (Causal Methods in Software Engineering, co-located with ICSE 2027).
 
-- **Submission: 13 Nov 2026 (AoE)**. Notification 11 Dec 2026. Camera-ready 29 Jan 2027.
-- Full paper 8 pp. Position/short paper 5 pp. Tool paper 5 pp. Double-anonymous review, ICSE 2027 format (check the template and whether references count toward the limit).
-- **Track: full paper (8 pp), Kubernetes only** (decided 2026-10-28). Fallback: cut to a 5-pp short paper if the Nov 6 checkpoint in `PLAN.md` is missed.
+## The study
 
-## Verdict: worth pursuing, with three adjustments
+Kubernetes ships three releases a year on a fixed calendar. Before each release, a **code freeze** stops new work. The weeks between the freeze and the release are used to test and stabilize the code. The deadline triggers a rush, as contributors try to get their code in before it.
 
-**Why it works**
-1. **The phenomenon is real and measurable from git alone.** Across 27 cycles, the final week carries 2× the normal merge volume. The 30-day revert rate in the last 48 hours is twice the baseline (RR 2.02, 95% CI 1.24–3.29). See `figures/fig1_rush.pdf`.
-2. **There is a real natural experiment.** In v1.31 the freeze was moved two weeks later. The spike moved with it: 11 merges in the 24 hours before the old date, 36 before the new one.
-3. **There is a real motivating case where the counterfactual was almost observed.** #122541 merged 29 minutes before the v1.30 freeze and was reverted. It re-landed in week 1 of v1.31 and stayed (`01_motivating_example.md`).
-4. **It fits CauSE well.** The question is counterfactual, pressure is a mediation question, and congestion is *interference between units*, a SUTVA violation. That framing will appeal to this program committee.
+We ask whether becoming ready to merge late causes more problems found after release, and through which path.
 
-**What to change**
-1. **Add a fourth story: freeze response.** During freeze, maintainers revert rather than fix forward. #122541 had a known one-line fix and was reverted anyway. So "reverted" is partly *caused by the freeze policy*, independent of code quality, and reviewers will raise it. Fix: use outcomes measured after the freeze ends (post-release bug fixes, patch-release cherry-picks), or compare revert-vs-fix-forward decisions directly.
-2. **Reverts alone are too rare.** There are 149 reverts among 25,880 PRs. The simulation shows that at Kubernetes scale the congestion diagnostic gives about 30% false signals with reverts only. Add more frequent outcomes: follow-up fix PRs that reference the original, `kind/regression` and `kind/flake` issues, and post-merge CI failures.
-3. **Correct facts in the pitch.** Code freeze falls in week **8–13**, not always week 12. Freeze-to-release runs about 3–7 weeks. In 2019 the freeze-to-thaw window was 8–12 days. The "merge bot needs time" claim needs a citation. A citable substitute from the official release-phases doc: *"Due to the Prow queue, this may mean that approved PRs merge shortly after the deadline."* This also means merge time ≠ readiness time, so use lgtm/approve timestamps for exposure.
+| | |
+|---|---|
+| **Units** | All non-bot pull requests merged into `kubernetes/kubernetes` that became ready within 12 weeks before a code freeze: 25,579 pull requests across 27 releases (v1.11–v1.37). |
+| **Ready** | When a pull request has both the `lgtm` and `approved` labels. We use this time, not the merge time, because the merge queue can delay a merge past the deadline. |
+| **Treatment** | Ready **late**, in the final 7 days before the freeze. |
+| **Comparison** | Ready **early**, 2 to 12 weeks before the freeze. |
+| **Problem** | A later pull request that reverts the original, or fixes it. |
+| **Outcome** | A problem found after release. |
 
-## Sources of identifying variation
+Late readiness can lead to a problem after release along two paths:
 
-| Mechanism | Design | Data |
+```
+            Composition (size, kind, SIGs, author)
+               │                        │
+               ▼                        ▼
+         Ready late ──code path──▶ Problems in the code ──▶ Problem found
+               │                                              after release
+               └────soak path───▶ Soak time ─────────────────▶
+```
+
+- **Code path:** late code is worse. It contains more problems, so more are found after release.
+- **Soak path:** late code is no worse, but it has less **soak time**, the time between merge and release. A problem it contains has less time to be found before release.
+- **Composition** (size, kind, SIGs, author) affects both when a change becomes ready and how many problems it has. It is a confounder, and we adjust for it.
+
+The two paths imply different results. Under the code path, late pull requests have more problems in total. Under the soak path alone, they have as many problems as early ones, but more of them are found after release.
+
+**RQ1.** How does the code-freeze rush unfold?
+**RQ2.** Does late code fail more often, or are its failures found later?
+
+## Layout
+
+| Folder | Contents |
+|---|---|
+| `crawl/` | GitHub GraphQL crawl of pull request metadata and label timelines. |
+| `analysis/` | Builds the dataset, validates outcome links, runs the analyses and draws the figures. |
+| `pilot/` | The git-only feasibility pilot. `pilot_rush_reverts.py` is still used: it detects and links reverts for `build_dataset.py`. The other scripts are the Rust data-adequacy screen and a synthetic illustration. |
+| `data/` | The freeze calendar, the analysis dataset, outcome links and validation coding (see below). |
+| `results/` | Every table the paper reports, as CSV, plus run logs. |
+| `paper/` | The LaTeX source and figures. |
+| `figures/` | The pilot's figure (not used in the paper). |
+
+### Data
+
+| File | Contents |
+|---|---|
+| `data/k8s_freeze_calendar.csv` | Code freeze (UTC), thaw and release date for each release, taken from the release team's schedules in `kubernetes/sig-release`. v1.31 uses its moved freeze (24 July 2024). |
+| `data/analysis.csv.gz` | One row per pull request: readiness, merge and release times; size, kind, SIG, milestone, priority and author labels; review measures; and outcomes. |
+| `data/links_reverts.csv`, `data/links_fixes.csv` | Revert → original and fix → original links, before checks. |
+| `data/links_*_checked.csv` | The same links with the automatic checks: whether a revert swaps the original's additions and deletions, and whether a fix uses cue words and shares a file with the original. |
+| `data/validation/human_census_*.csv` | Hand coding of every fix link the outcomes use. The key links neutral ids to pull requests, and the answers are y / n / ?. The coder did not see dates or whether a pull request was late. |
+| `data/raw/` | The raw crawl (about 256 MB). It is not in the repository; rebuild it with `crawl/` (see below). |
+
+## Reproducing the results
+
+Requirements: Python 3.13 with pandas 2.3, numpy 2.3, scipy 1.16, statsmodels 0.14, scikit-learn 1.7 and matplotlib 3.10.
+
+Run single-threaded. With multithreaded BLAS, the bootstrap runs in parallel can take about an hour instead of about ten minutes.
+
+```bash
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1
+```
+
+### From the included dataset (no GitHub token needed)
+
+Each outcome is reported with two link sets: **all links** (`--links all`) and **checked links** (`--links human`). Checked links are verified reverts plus the fixes the hand coding confirmed.
+
+```bash
+python analysis/run_rqs.py --links all          # the rush's impact and the four explanations
+python analysis/run_rqs.py --links human        #   ... with checked links (results/links_human/)
+python analysis/soak_decomposition.py --links human   # 180 days from merge: total vs before/after release
+python analysis/soak_evidence.py --links human        # discovery curve, observed vs expected share by week
+python analysis/timing_series.py                # the rush and what changes as the freeze nears
+python analysis/make_paper_figure.py            # paper/figures/fig_{rush,changes,soak}.pdf
+```
+
+`soak_decomposition.py --horizon 90` and `--horizon 365` give the other window lengths (all links only; the hand coding covers links within 180 days of merge).
+
+### Where each part of the paper comes from
+
+The scripts number the analyses RQ1–RQ5 as in the original analysis plan. The paper groups them into two research questions:
+
+| Paper | Script | Results |
 |---|---|---|
-| Composition | Stratify or match on kind, size, SIG, KEP-tracked. Bunching estimator for the "pulled-forward" excess mass. | PR labels (GitHub API/GraphQL) |
-| Pressure | Author fixed effects plus cycle fixed effects. Mediators: review rounds, time from last push to lgtm, number of reviewers. Dose from policy: code slush (v1.13), freeze-week variation (8–13), 4→3 releases per year (v1.22), v1.31 postponement, AoE deadline (v1.35). | GitHub timeline events, `data/k8s_freeze_calendar.csv` |
-| Congestion | Exposure mapping: same-day merges touching the same packages or SIG, holding time-to-freeze fixed. Load shocks outside deadlines, e.g. the unexplained 76-merge burst on 24–27 Jun 2024. | git, Prow/Tide history (availability for older cycles needs checking) |
-| Freeze response | Revert vs fix-forward choice conditional on a regression being found; outcomes measured after freeze. | revert PR text, cherry-pick PRs |
+| RQ1: the rush, the v1.31 moved deadline, the move to three releases a year | `timing_series.py`, `run_rqs.py` | `timing_rush_*.csv`, `timing_v131_weeks.csv`, `rq3_v131.csv`, `rq3_dose*.csv` |
+| RQ1: the impact (risk ratios by time before freeze, placebo deadline) | `run_rqs.py` | `rq1_bins.csv`, `rq1_rr.csv` |
+| RQ1: what changes as the freeze nears | `timing_series.py` | `timing_by_bin.csv` |
+| RQ2: composition | `run_rqs.py` | `rq2_composition.csv`, `rq2_balance.csv`, `rq2_overlap_*.csv` |
+| RQ2: pressure on review | `run_rqs.py` | `rq3_pressure.csv` |
+| RQ2: a crowded merge queue | `run_rqs.py` | `rq4_congestion.csv` |
+| RQ2: the freeze itself | `run_rqs.py` | `rq5_freeze_response.csv` |
+| RQ2: soak time | `soak_decomposition.py`, `soak_evidence.py` | `exploratory_soak_*.csv`, `exploratory_evidence_*.csv`, `timing_discovery.csv` |
 
-Negative controls: placebo deadlines, docs-only and bot PRs.
+Checked-link versions of the `rq*` files are in `results/links_human/`. The soak-time analyses and the descriptive series were added after we saw the planned results, so their files are marked `exploratory_` or `timing_`.
 
-## Ecosystem selection criteria (draft for the Method section)
+### Full rebuild from GitHub
 
-An ecosystem qualifies only if it meets all of C1–C3 (the deadline must be a credible exogenous shock), plus enough of C4–C9 to support the designs.
+This needs a GitHub token in a `.env` file in the project root (`GITHUB_TOKEN=...`). Never commit that file; `.gitignore` excludes it.
 
-| # | Criterion | Why the causal design needs it |
-|---|---|---|
-| C1 | Time-based releases with a **hard merge cutoff announced in advance** | The deadline must not move because code is late. Otherwise the code causes the deadline, and causation runs the wrong way. |
-| C2 | **≥ 20 repeated deadlines** | Cycle fixed effects and inference clustered by cycle |
-| C3 | Cutoff dates recoverable from **primary sources** | Exposure must be measured, not guessed |
-| C4 | Timestamps for **readiness** (approval) and **merge** | Separates author/reviewer behaviour from queue delay (congestion) |
-| C5 | Change-type signal (feature vs bug labels, blueprint/bug trailers) | Composition controls |
-| C6 | Linkable quality outcomes **with enough events** (reverts/backouts, `Fixes:` links, regression labels) | Power. Reverts alone are too rare (see the simulation). |
-| C7 | Stable contributor identities across cycles | Within-author comparisons |
-| C8 | Documented changes to deadline policy | Dose variation |
-| C9 | Observable merge queue / CI | Congestion exposure |
+```bash
+git clone --filter=tree:0 --bare --single-branch --branch master \
+    https://github.com/kubernetes/kubernetes.git k8s.git
 
-Exclusion: releases driven by features, deadlines that slip when work isn't ready (e.g. Ethereum network upgrades), and repos without PR-level history.
-
-### Decision rule for adding Rust (fixed 2026-10-28, before any Rust data was examined)
-
-Rust is included if and only if it passes these **data-adequacy** checks. The direction of its results plays no part.
-1. Beta-cut dates recoverable from primary sources (version-bump commits or release notes) for ≥ 20 cycles.
-2. ≥ 80% of revert PRs linkable to the PR they revert.
-3. ≥ 100 linked reverts inside the 6-week pre-cut windows, so the gradient's confidence interval is informative.
-
-Pre-stated reading of the outcomes:
-- (a) Weak rush and weak gradient: consistent with a high cost of missing driving the effect in Kubernetes.
-- (b) Rush plus gradient: the effect generalises beyond Kubernetes.
-- (c) Gradient without a rush: points away from pressure, toward scrutiny or freeze response at branch cut.
-
-If Rust fails the checks, the paper says so in one sentence and stays Kubernetes-only.
-
-**Outcome (2026-10-28, `pilot/rust_adequacy.py`, no Rust results computed):**
-- [1] PASS: 59 beta cuts (1.13–1.99) consistent with RELEASES.md.
-- [2] **FAIL: 277/430 revert PRs linked (64.4%)**.
-- [3] PASS: 194 linked reverts inside windows.
-
-Why [2] failed, across the 153 unlinked reverts:
-- 73 have only a descriptive title ("Revert the `LazyConst` PR").
-- 67 quote a title that doesn't exactly match the original.
-- 12 cite a bare PR number the git-only linker missed.
-- 1 is from another repo.
-
-The failure comes from git-only linking, which can't see PR bodies, not from missing data. The Kubernetes linker uses the same git-only method and reaches 85% (622/732).
-**Decision (2026-10-28): accept the failure. Rust is excluded and the paper is Kubernetes-only.** The paper reports that Rust was screened and excluded on revert linkability.
-
-## Folder
-
-- `01_motivating_example.md`: real vignette, scale evidence, three-worlds table, paragraph ready for the paper
-- `figures/fig1_rush.{pdf,png}`: (a) rush, (b) revert gradient, (c) v1.31 deadline move
-- `data/k8s_freeze_calendar.csv`: freeze, thaw and release dates for v1.11–v1.38, from `kubernetes/sig-release`
-- `pilot/pilot_rush_reverts.py`: rush and revert pilot (git only, no token needed); outputs in `pilot/out/`
-- `pilot/sim_three_worlds.py`: synthetic observational-equivalence demo
-- `pilot/make_figures.py`: builds Figure 1
-- `crawl/crawl_prs.py`: GraphQL crawl of labels, files, reviews and lgtm/approve timeline for the 32,980 PRs merged since 2018. Writes `data/raw/prs_graphql.jsonl` and resumes if stopped.
-- `crawl/refetch_timelines.py`: re-fetches every PR's label timeline in small batches with pagination and verifies it against the PR's current labels. Needed because batched GraphQL queries silently truncate timelines (see PLAN.md, Deviations).
-- `crawl/refetch_timeline_tail.py`: superseded by `refetch_timelines.py`; its output is used only for PRs the verified re-fetch lacks.
-- `analysis/build_dataset.py`: builds the units, readiness exposure, Y1–Y3, covariates, mediators and congestion exposures. Writes `data/analysis.csv.gz` and the link files.
-- `analysis/run_rqs.py`: runs RQ1–RQ5 as specified in `PLAN.md` and writes `results/`.
-- `analysis/sample_validation.py`: draws the 50 + 50 link samples for manual precision coding (`data/validation/`).
-- `.env`: holds `GITHUB_TOKEN`. Never commit it.
-
-Full run, once the crawl finishes:
-```
-python crawl/refetch_timelines.py        # or 4 workers: --shards 4 --shard 0..3
-python analysis/build_dataset.py k8s.git
-python analysis/sample_validation.py
-python analysis/run_rqs.py --boot 400
+python crawl/crawl_prs.py k8s.git              # PR metadata; add --shards N --shard i to split
+python crawl/refetch_timelines.py              # full, verified label timelines
+python analysis/build_dataset.py k8s.git       # data/analysis.csv.gz and the outcome links
+python analysis/auto_validate_links.py         # automatic revert and fix checks
+python analysis/prepare_human_census.py OUT.json   # page data for hand-coding the fix links
+python analysis/score_human_census.py          # after coding: precision for late vs early
 ```
 
-Reproduce:
-```
-git clone --filter=tree:0 --bare --single-branch --branch master https://github.com/kubernetes/kubernetes.git k8s.git
-python pilot/pilot_rush_reverts.py k8s.git && python pilot/sim_three_worlds.py && python pilot/make_figures.py
-```
+GitHub's GraphQL API silently truncates `timelineItems` when many pull requests are queried at once. It gives no error and no `hasNextPage`. `refetch_timelines.py` therefore queries in batches of 10. It checks every pull request by replaying its label events against its current labels, and retries failures one at a time.
 
-## Pilot limitations (state these honestly)
-
-- Reverts are linked by title, branch name and "This reverts commit" heuristics: 622 of 732 revert PRs are linked. Coverage of manual reverts is unvalidated.
-- Freeze times before v1.22 are approximated from "EOD PST".
-- The within-author comparison is descriptive and has no controls for kind or size yet.
-- The next step is a GitHub token for labels and review events. GraphQL over about 26k PRs is a 1–2 day crawl.
+A new crawl reflects GitHub as it is on that day. Pull requests deleted since our crawl in October 2026 will be missing, and labels may have changed.
