@@ -7,6 +7,7 @@ __pycache__/
 
 # os
 .DS_Store
+__MACOSX/
 
-# raw crawl (256 MB; rebuild with crawl/crawl_prs.py)
+# raw crawl (about 256 MB; rebuild with: python build.py crawl k8s.git)
 data/raw/
